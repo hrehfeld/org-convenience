@@ -100,15 +100,29 @@
       (org-ml-update* it (org-ml-headline-set-title! new-title nil headline))
       (message "%s" title))))
 
-(defun org-convenience-heading-goto-title (point)
-  (interactive "d")
+;; org-element parser
+;; (defun org-convenience-heading-goto-title (point)
+;;   (interactive "d")
+;;   (org-back-to-heading)
+;;   (let* ((headline (org-element-headline-parser))
+;;          (title (substring-no-properties (car (org-element-property :title headline))))
+;;          )
+;;     (message "%S" title)
+;;     (search-forward title (org-element-property :end headline) t)
+;;     (goto-char (match-beginning 0))))
+
+;; regex based
+(defun org-convenience-heading-goto-title ()
+  (interactive)
   (org-back-to-heading)
-  (let* ((headline (org-element-headline-parser))
-         (title (substring-no-properties (car (org-element-property :title headline))))
-         )
-    (message "%S" title)
-    (search-forward title (org-element-property :end headline) t)
-    (goto-char (match-beginning 0))))
+  (when (looking-at org-heading-regexp)
+    (goto-char (match-beginning 2)))
+  (when (looking-at org-todo-regexp)
+    (goto-char (match-end 0)))
+  (when (looking-at org-priority-regexp)
+    (goto-char (match-end 0)))
+  (when (looking-at "[ 	]+")
+    (goto-char (match-end 0))))
 
 
 (defun org-convenience-add-tag-from-word-at-point ()
@@ -124,13 +138,6 @@
     (org-set-tags-command)))
 
 
-(defun org-convenience-goto-heading-title ()
-  (interactive)
-  (org-back-to-heading)
-  (when (looking-at org-heading-regexp)
-    (goto-char (match-beginning 2)))
-  (when (looking-at org-priority-regexp)
-    (goto-char (match-end 0))))
 
 (defun org-convenience-forward-heading-same-level-or-up-forward-heading-same-level ()
   (interactive)
