@@ -225,13 +225,13 @@ With a `C-u` ARG, just jump to the headline."
 	   ;; Are we in org-capture-mode?
 	   (is-capturing
 	    ;; Minor mode variable that's defined when capturing
-	    (defun org-convenience-refile--refile-fix ()
+	    (defun org-convenience-refile--refile-fix (&optional arg default-buffer rfloc msg)
 		    "Call org-convenience-refile--refile with preset file headline arg instead"
 		    (interactive)
 		    (advice-remove 'org-refile #'org-convenience-refile--refile-fix)
 		    (org-convenience-refile--refile file headline arg))
 	    (advice-add 'org-refile :override #'org-convenience-refile--refile-fix)
-	    (message "overrdiging org-refile")
+	    (advice-remove 'org-refile #'org-convenience-refile--refile-fix)
 	    (org-capture-refile)
 	    )
 	   (t
