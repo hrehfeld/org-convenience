@@ -179,18 +179,21 @@
         (org-up-heading-safe))
       (move-to-column column))))
 
-(defun org-convenience-up-element-or-backward-heading ()
-  (interactive)
+(defun org-convenience--up-element-or-backward-heading (stop-after-back-to-heading?-fun)
   (let ((column (current-column))
         (point (point)))
     (org-back-to-heading)
-    (when (= point (point))
+    (when (funcall stop-after-back-to-heading?-fun point)
       (let ((point (point)))
         (ignore-errors
           (org-up-element))
         (when (= point (point))
           (org-previous-visible-heading 1))
         (move-to-column column)))))
+
+(defun org-convenience-up-element-or-backward-heading ()
+  (interactive)
+  (org-convenience--up-element-or-backward-heading (lambda (point) (= point (point)))))
 
 (defun org-convenience-clipboard-yank-quote ()
   (interactive)
