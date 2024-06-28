@@ -181,15 +181,16 @@
 
 (defun org-convenience-up-element-or-backward-heading ()
   (interactive)
-  (let ((column (current-column)))
+  (let ((column (current-column))
+        (point (point)))
     (org-back-to-heading)
-
-    (let ((point (point)))
-      (ignore-errors
+    (when (= point (point))
+      (let ((point (point)))
+        (ignore-errors
           (org-up-element))
-      (when (= point (point))
-        (org-previous-visible-heading 1))
-      (move-to-column column))))
+        (when (= point (point))
+          (org-previous-visible-heading 1))
+        (move-to-column column)))))
 
 (defun org-convenience-clipboard-yank-quote ()
   (interactive)
