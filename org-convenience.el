@@ -190,11 +190,11 @@
         (org-up-heading-safe))
       (move-to-column column))))
 
-(defun org-convenience--up-element-or-backward-heading (stop-after-back-to-heading?-fun)
+(defun org-convenience--up-element-or-backward-heading (continue-after-back-to-heading?-fun)
   (let ((column (current-column))
         (point (point)))
     (org-back-to-heading)
-    (when (funcall stop-after-back-to-heading?-fun point)
+    (when (funcall continue-after-back-to-heading?-fun point)
       (let ((point (point)))
         (ignore-errors
           (org-up-element))
