@@ -35,20 +35,31 @@
 (defun org-convenience-goto-heading-text ()
   "Move point to the start of text after any drawers at the beginning of the headline."
   (interactive)
-  (org-back-to-heading t)
-  (let* ((heading (org-element-at-point-no-context))
-         (end (org-element-end heading)))
-    (while (and (< (point) end)
-                (re-search-forward org-drawer-regexp end t))
-      (let* ((drawer (org-element-at-point))
-             (type (org-element-type drawer)))
-        (when (memq type '(drawer property-drawer))
-          ;; Make sure to skip drawer entirely or we might flag it
-          ;; another time when matching its ending line with
-          ;; `org-drawer-regexp'.
-          (goto-char (org-element-end drawer))
-          (re-search-forward "\s+" end t)))))
-  (beginning-of-line))
+  (let (target-point)
+    (org-back-to-heading t)
+    (let* ((heading (org-element-at-point-no-context))
+           (end (org-element-end heading)))
+      ;; skip forward over any drawers until heading end
+      (while (and (< (point) end)
+                  (re-search-forward org-drawer-regexp end t))
+        (let* ((drawer (org-element-at-point))
+               (type (org-element-type drawer)))
+          (when (memq type '(drawer property-drawer))
+            ;; Make sure to skip drawer entirely or we might flag it
+            ;; another time when matching its ending line with
+            ;; `org-drawer-regexp'.
+            (goto-char (org-element-end drawer))
+            (re-search-forward "\s+" end t)))))
+    (beginning-of-line)
+    (when (= (point)
+             (save-excursion
+               (org-back-to-heading t)
+               (point)))
+      (previous-line)
+      (when (org-at-drawer-p)
+        (end-of-line)
+        (newline)
+        ))))
 
 (defun org-convenience-toggle-tag (tag &optional onoff)
   "Like org-toggle-tag, but works in agenda."
