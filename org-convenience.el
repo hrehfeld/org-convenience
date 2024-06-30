@@ -206,6 +206,16 @@
   (interactive)
   (org-convenience--up-element-or-backward-heading (lambda (point) (= point (point)))))
 
+(defun org-convenience-up-element-or-backward-heading-unless-at-heading ()
+  (interactive)
+  (org-convenience--up-element-or-backward-heading (lambda (point)
+                                                     (let ((new-point (point)))
+                                                       ;; check if we just went back to the same heading we were on
+                                                       (save-excursion
+                                                         (goto-char point)
+                                                         (org-back-to-heading)
+                                                         (= (point) new-point))))))
+
 (defun org-convenience-clipboard-yank-quote ()
   (interactive)
   (org-insert-structure-template "quote")
