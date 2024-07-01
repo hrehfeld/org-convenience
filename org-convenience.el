@@ -152,7 +152,8 @@
   (when (looking-at org-priority-regexp)
     (goto-char (match-end 0)))
   (when (looking-at "[ 	]+")
-    (goto-char (match-end 0))))
+    (goto-char (match-end 0)))
+  t)
 
 
 (defun org-convenience-add-tag-from-word-at-point ()
